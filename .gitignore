@@ -1,3 +1,14 @@
+#all my vars are currently stored in .json files therefore ignoring them for now
+*.json
+
+# some other random files that i dont want on the internet
+csv/index.html
+csv/output2.html
+*.csv
+
+
+#down below is a github template
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
