@@ -1,0 +1,125 @@
+/*
+button: #5c7f67; 
+buttton-hover: #4a6652;
+button-text: #adffd7;
+nav: #e6e6e6;
+working-background: #ffffff;
+fields background-color: #1e0606;
+*/
+
+/*
+General tag stuff
+*/
+
+html{
+background-color: #cfcfcf;
+color: #333333;
+font-family: sans-serif;
+margin: 0;
+padding: 0;
+}
+h1{
+padding: 10px 0 0 0 ;
+margin: 0;
+}
+p {
+color: #666;
+padding: 0 0 10px 0;
+}
+td a{
+text-decoration: none;
+color: #4a6652;
+font-weight: bold;
+}
+header{
+    width: 90%;
+    float: right;
+}
+
+nav{
+    width: 10%;
+    height:100vh;
+    float: left;
+}
+ul{
+    padding: 0;
+    list-style-type: none;
+}
+li{
+    background-color: #5c7f67;
+    border-radius: 10px;
+    margin: 5px;
+    color: #adffd7;
+    padding: 10px 20px;
+    text-align: center;
+}
+li :hover{
+    background-color: #4a6652;
+}
+li a{
+    color: #adffd7;
+    text-decoration: none;
+    font-weight: bold;
+}
+.navcontents{
+    margin: auto;
+}
+.navcontents p{
+    margin: auto;
+    width: 50%;
+}
+.imgage{
+margin: auto;
+width: 5%;
+height: 5%;
+}
+.logo{
+    margin: auto;
+    width: 5%;
+    height: 5%;
+    }
+/*
+Table stuff
+*/
+
+table {
+border-collapse: collapse;
+margin: 25px 0;
+font-size: 0.9em;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+margin-left: auto;
+margin-right: auto;
+max-width: 100%;
+}
+thead tr {
+background-color: #1e0606;
+color: #ffffff;
+}
+th, td{
+padding: 12px 15px;
+
+}
+tr {
+border: 1px solid #e6e6e6;
+}
+/*
+tr:last-of-type {
+border-bottom: 2px solid #e6e6e6;
+}
+*/
+
+/*
+Some layout stuff
+*/
+
+.container {
+width: 90%;
+text-align: center;
+float: right;
+margin: -37px 0 0 0;
+}
+.vertical-center {
+background-color: #fff;
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+margin: 0;
+}

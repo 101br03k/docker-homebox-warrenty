@@ -1,6 +1,14 @@
 import os
-#import csv
 import pandas as pd
+
+host = "http://192.168.0.11:3100"
+
+# delete the old csv from previous job
+if os.path.exists("output2.csv"):
+    os.remove("output2.csv")
+    print("deleted file output2.csv")
+else:
+    print("The file output.csv does not exist")
 
 print("starting csv editing")
 # Step 1: Read the CSV file into a DataFrame
@@ -8,21 +16,17 @@ df = pd.read_csv('input.csv')
 
 # Step 2: Remove rows where the value in the specified column matches the value to be removed
 # this removes HB.archived = ja
-df_filtered = df[df["HB.archived"] != "true"]
-# this removes HB.field.Doos = nee
-df_filtered2 = df_filtered[df["HB.field.Doos"] != "nee"]
+df = df[df["HB.archived"] != "true"]
 # this removes HB.lifetime_warranty = true
-df_filtered3 = df_filtered2[df["HB.field.Doos"] != "true"]
-
+df = df[df["HB.field.Doos"] != "true"]
+# this removes HB.field.Doos = nee
+df = df[df["HB.field.Doos"] != "nee"]
 # Step 3: Write the filtered DataFrame back to a new CSV file
 #df_filtered3.to_csv('output.csv', index=False)
 
 print("Rows with specified collums values have been removed and the modified data has been saved to 'output1.csv'.")
 
-# Step 4: Read the CSV file into a DataFrame
-#df = pd.read_csv('output.csv')
-df = df_filtered3
-# Step 5: Delete the specified columns
+# Step 4: Delete the specified columns
 df.drop('HB.import_ref', axis=1, inplace=True)
 df.drop('HB.labels', axis=1, inplace=True)
 df.drop('HB.url', axis=1, inplace=True)
@@ -43,43 +47,54 @@ df.drop('HB.sold_price', axis=1, inplace=True)
 df.drop('HB.sold_time', axis=1, inplace=True)
 df.drop('HB.sold_notes', axis=1, inplace=True)
 
-# Step 6: Rename Collum names to a more clean name:  
-df.rename(columns={'HB.location': 'location'}, inplace=True)
-df.rename(columns={'HB.asset_id': 'asset_id'}, inplace=True)
-df.rename(columns={'HB.name': 'name'}, inplace=True)
-df.rename(columns={'HB.quantity': 'quantity'}, inplace=True)
-#df.rename(columns={'HB.warranty_expires': 'warranty_expires'}, inplace=True) getting errors in this one
-df.rename(columns={'HB.field.Doos': 'Doos'}, inplace=True)
+#delete all custom collums (all custom collums start with hb.field.*) except those seperate specified with: and col != 'HB.field.Doos'
+columns_to_drop = [col for col in df.columns if col.startswith('HB.field.') and col != 'HB.field.Doos']
+df.drop(columns=columns_to_drop, inplace=True)
 
-# Step 7: Write the modified DataFrame back to a new CSV file
+
+
+# Step 6: Write the modified DataFrame back to a new CSV file
 df.to_csv('output1.csv', index=False)
 
-print("Columns has been deleted and the modified data has been saved to 'output1.csv'.")
+print("Columns has been deleted")
 
-# Step 1: Read the CSV file into a DataFrame
-df = pd.read_csv('output1.csv')
-
-# Step 2: Convert the 'HB.warranty_expires' column to datetime format with error handling
-# Try to parse dates and coerce errors to NaT (Not a Time)
+# Step 8: Convert the 'HB.warranty_expires' column to datetime format with error handling
 df['HB.warranty_expires'] = pd.to_datetime(df['HB.warranty_expires'], errors='coerce', dayfirst=False)
 
-# Step 3: Filter out rows where 'HB.warranty_expires' is before the specified date
-# Replace '2025-01-01' with the date you want to use for filtering
+# Try to parse dates and coerce errors to NaT (Not a Time)
+invalid_dates = df[df['HB.warranty_expires'].isna()]
+if not invalid_dates.empty:
+    print("Rows with invalid dates in 'HB.warranty_expires':")
+    print(invalid_dates)
+    
+# Step 9: Filter out rows where 'HB.warranty_expires' is before the specified date
 specified_date = pd.to_datetime('2025-01-01')
-df_filtered = df[df['HB.warranty_expires'] <= specified_date]
+df = df[df['HB.warranty_expires'] <= specified_date]
 
-# Step 4: Write the filtered DataFrame back to a new CSV file
-df_filtered.to_csv('output2.csv', index=False)
+#df["HB.asset_id"] = df["HB.asset_id"].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
+a = "/a/"
+df["HB.asset_id"] = df["HB.asset_id"].apply(lambda x: f'<a href="{host}{a}{x}" target="_blank">{x}</a>')
+#print(df["HB.asset_id"])
+
+# Step 5: Rename Collum names to a more clean name:  
+df.columns = df.columns.str.replace('^HB\.', '', regex=True)
+#df.rename(columns={'HB.warranty_expires': 'quantity'}, inplace=True) #getting errors in this one
+df.rename(columns={'HB.field.Doos': 'Doos'}, inplace=True)
+
+
+
+# Step 10: Write the filtered DataFrame back to a new CSV file
+df.to_csv('output2.csv', index=False)
 
 print("Rows with dates before the specified date have been removed and the modified data has been saved to 'output2.csv'.")
 print("csv editing finished")
 print("now starting index.html generation")
 
-# Step 1: Read the CSV file into a DataFrame
+# Step 11: Read the CSV file into a DataFrame
 df = pd.read_csv('output2.csv')
 
-# Step 2: Convert the DataFrame to an HTML table
-html_table = df.to_html(index=False)
+# Step 12: Convert the DataFrame to an HTML table
+html_table = df.to_html(escape=False, index=False)
 
 # Save the HTML table to a file
 with open('output2.html', 'w') as file:
@@ -87,23 +102,31 @@ with open('output2.html', 'w') as file:
 
 print("CSV file has been converted to an HTML table and saved as 'output2.html'.")
 
+#setting style by selecting a css file
+style = "homebox" # later implement changin it via docker env var
+c1 = '<link rel="stylesheet" href="css/'+style+'.css">'
+#print(c1)
 
 # opening files in read only mode to read initial contents
-f1 = open("index.html", 'w')
-f2 = open("templates/header.html", 'r')
-f3 = open("templates/footer.html", 'r')
-c1 = open("output2.html", 'r')
- 
+o1 = open("index.html", 'w')
+f1 = open("html-templates/header.html", 'r')
+f2 = open("html-templates/header2.html", 'r')
+f3 = open("html-templates/footer.html", 'r')
+h1 = open("output2.html", 'r')
+
 # appending the contents of the second file to the first file
-f1.write(f2.read())
-f1.write(c1.read())
-f1.write(f3.read())
+o1.write(f1.read())
+o1.write(c1)
+o1.write(f2.read())
+o1.write(h1.read())
+o1.write(f3.read())
  
 # closing the files
+o1.close()
 f1.close()
 f2.close()
 f3.close()
-c1.close()
+h1.close()
 
 #removing files
 print("")
@@ -119,16 +142,10 @@ if os.path.exists("output1.csv"):
 else:
     print("The file output1.csv does not exist")
 
-if os.path.exists("output2.csv"):
-    os.remove("output2.csv")
-    print("deleted file output2.csv")
+if os.path.exists("output2.html"):
+    os.remove("output2.html")
+    print("deleted file output2.html")
 else:
-    print("The file output.csv does not exist")
-
-#if os.path.exists("output2.html"):
-#    os.remove("output2.html")
-#    print("deleted file output2.html")
-#else:
     print("The file output2.html does not exist")
 
 print("finished html generation")
