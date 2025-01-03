@@ -8,8 +8,9 @@ import io
 
 print("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
 # api-endpoint
-URLforbearer = "http://192.168.0.11:3100/api/v1/users/login"
-URLforexport = "http://192.168.0.11:3100/api/v1/items/export"
+host = "http://192.168.0.11:3100"
+URLforbearer = host+"/api/v1/users/login"
+URLforexport = host+"/api/v1/items/export"
 debug="true"
 
 with open('debug.json') as h:
@@ -50,13 +51,18 @@ def getbearer():
 
         #format rbearer_expires_at
         rbearer_expires_at_formated = rbearer_expires_at.replace("T", " ") 
+        rbearer_dict["bearertokensaved"] = rbearer_without_bearer
+        del rbearer_dict["token"]
+        del rbearer_dict["attachmentToken"]
+        del rbearer_dict["expiresAt"]
+        rbearer_dict["expires"] = rbearer_expires_at_formated
         print("rbearer_expires_at_formated",rbearer_expires_at_formated)
         print()
         
         #save rbearerexpiresatformated to file
-        i = open("key2.json", "w")
-        i.write(rbearer_dict["token"])
-        i.write("Now the file has more content!")
+        i = open("key.json", "w")
+        i.write(json.dumps(rbearer_dict))
+
 
 def auth_and_export():
     print("starting auth_and_export")
