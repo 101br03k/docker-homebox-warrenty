@@ -2,6 +2,7 @@ import os
 import pandas as pd
 
 host = "http://192.168.0.11:3100"
+#host = "https://demo.homebox.software"
 
 # delete the old csv from previous job
 if os.path.exists("output2.csv"):
@@ -17,10 +18,14 @@ df = pd.read_csv('input.csv')
 # Step 2: Remove rows where the value in the specified column matches the value to be removed
 # this removes HB.archived = ja
 df = df[df["HB.archived"] != "true"]
-# this removes HB.lifetime_warranty = true
-df = df[df["HB.field.Doos"] != "true"]
-# this removes HB.field.Doos = nee
-df = df[df["HB.field.Doos"] != "nee"]
+if "HB.field.Doos" in df.columns:
+    print("HB.field.Doos collum found, removing empty and is not true rows for collum HB.field.Doos")
+    # this removes HB.field.doos isnot true
+    df = df[df["HB.field.Doos"] != "true"]
+    # this removes HB.field.Doos = empty
+    df = df.dropna(subset=["HB.field.Doos"])
+else:
+    print("HB.field.Doos collum not found")
 # Step 3: Write the filtered DataFrame back to a new CSV file
 #df_filtered3.to_csv('output.csv', index=False)
 
@@ -104,23 +109,38 @@ print("CSV file has been converted to an HTML table and saved as 'output2.html'.
 
 #setting style by selecting a css file
 style = "homebox" # later implement changin it via docker env var
-c1 = '<link rel="stylesheet" href="css/'+style+'.css">'
-#print(c1)
+c1 = '<link rel="stylesheet" href="css/'+style+'.css"></head><body>'
+#setting banner file
+b1 = open('html-templates/banner/'+style+'.html','r')
+# get amount of rows for stats
+num_of_rows = len(df)
+# add up amount of all items in the collum
+total_sum = df["quantity"].sum()
 
 # opening files in read only mode to read initial contents
 o1 = open("index.html", 'w')
 f1 = open("html-templates/header.html", 'r')
 f2 = open("html-templates/header2.html", 'r')
 f3 = open("html-templates/footer.html", 'r')
+f4 = open("html-templates/header3.html", 'r')
+f5 = open("html-templates/header4.html", 'r')
+f6 = open("html-templates/header5.html", 'r')
 h1 = open("output2.html", 'r')
 
 # appending the contents of the second file to the first file
 o1.write(f1.read())
 o1.write(c1)
+o1.write(b1.read())
 o1.write(f2.read())
+o1.write(str(num_of_rows))
+o1.write(f4.read())
+o1.write(str(total_sum))
+o1.write(f5.read())
+o1.write(str(num_of_rows))
+o1.write(f6.read())
 o1.write(h1.read())
 o1.write(f3.read())
- 
+
 # closing the files
 o1.close()
 f1.close()
