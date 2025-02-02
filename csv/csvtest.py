@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 
-host = "http://192.168.0.11:3100"
-#host = "https://demo.homebox.software"
+homebox_url = "http://192.168.0.11:3100"
+#homebox_url = "https://demo.homebox.software"
 
 # delete the old csv from previous job
 if os.path.exists("output2.csv"):
@@ -78,7 +78,7 @@ df = df[df['HB.warranty_expires'] <= specified_date]
 
 #df["HB.asset_id"] = df["HB.asset_id"].apply(lambda x: f'<a href="{x}" target="_blank">{x}</a>')
 a = "/a/"
-df["HB.asset_id"] = df["HB.asset_id"].apply(lambda x: f'<a href="{host}{a}{x}" target="_blank">{x}</a>')
+df["HB.asset_id"] = df["HB.asset_id"].apply(lambda x: f'<a href="{homebox_url}{a}{x}" target="_blank">{x}</a>')
 #print(df["HB.asset_id"])
 
 # Step 5: Rename Collum names to a more clean name:  

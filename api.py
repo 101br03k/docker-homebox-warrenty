@@ -1,16 +1,23 @@
-# importing the requests library
+#when running local set the host and if needed debug as os env var
+#for windows this is in cmd: 
+# set debug=true
+# set host=https://demo.homebox.software.com
+
+# importing librarys
 import requests
 import json
 import datetime
-import string
-import io
+import os
 
 
 print("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-# api-endpoint
-host = "http://192.168.0.11:3100"
-URLforbearer = host+"/api/v1/users/login"
-URLforexport = host+"/api/v1/items/export"
+# get all envs from os
+homebox_url = os.getenv("homebox_url")
+debug=os.getenv("debug")
+print(homebox_url, debug)
+
+URLforbearer = homebox_url+"/api/v1/users/login"
+URLforexport = homebox_url+"/api/v1/items/export"
 debug="true"
 
 with open('debug.json') as h:
@@ -94,21 +101,6 @@ def auth_and_export():
             print()
         print ("")
         
-
-
-        #open templates, destenation file and write contents from api and template to destenation
-        #with open('templates/header.html') as p:
-        #    header = p.read()
-        #with open('templates/footer.html') as q:
-        #    footer = q.read()
-        #with io.open("index.html", "w", encoding="utf-8") as r:
-        #    r.write(header)
-        #    r.write(rexport.text)
-        #    r.write(footer)
-        #    r.close()
-        #p.close()
-        #q.close()
-
 
 def check_if_bearer_expired():
 #load rbearer from file and check if expired
