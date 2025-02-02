@@ -53,21 +53,22 @@ ul{
 }
 li{
     text-align: center;
-    margin-bottom: 10px;
     padding: 10px;
     color: #adffd7;
     text-decoration: none;
     background-color: #5c7f67;
     border-radius: 10px;
-    width: 70%;
     font-family: sans-serif;
-    margin: auto;
 
+}
+#ul_center{
+    margin: auto;
+    width: 80%;
 }
 li :hover{
     background-color: #4a6652;
 }
-li a{
+ul a{
     color: #adffd7;
     text-decoration: none;
 }
