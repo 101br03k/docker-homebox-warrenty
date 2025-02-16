@@ -89,18 +89,19 @@ li #icon{
 /*
 Counters stuff
 */
+
 #counters h3{
     text-align: left;
     margin-bottom: 8px;
     margin-left: 5.5%;
 }
 #counters #spacing-lr{
-    width: 15%;
+    width: 9%;
     height: 3vw;
     float: left;
 }
 #counters #spacing{
-    width: 14%;
+    width: 12%;
     float: left;
     height: 3vw;
 }
@@ -108,7 +109,7 @@ Counters stuff
     background-color: #2c2e27;
     border-radius: 10px;
     padding: 1%;
-    width: 12%;
+    width: 10%;
     float: left;
     margin-bottom: 30px;
 }
