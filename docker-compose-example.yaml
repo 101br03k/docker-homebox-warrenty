@@ -1,0 +1,13 @@
+services:
+  homebox-warrenty:
+    container_name: homebox-warrenty
+    image: 101br03k/homebox-warrenty:latest
+    ports:
+      - 42069:42069
+    environment:
+      host: https://demo.homebox.software
+      username: demo@example.com # please use .env for this
+      password: demo # please use .env for this
+      key: supersafe-encrypt-and-decrypt-key # please use .env for this
+      debug: false 
+      theme: homebox # currently in dev
