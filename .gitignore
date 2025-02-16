@@ -2,8 +2,7 @@
 *.json
 
 # some other random files that i dont want on the internet
-csv/index.html
-csv/output2.html
+csv/*.html
 *.csv
 
 
