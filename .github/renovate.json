@@ -10,5 +10,4 @@
       "addLabels": ["optional"]
     }
   ]
-  "extends": ["config:recommended", ":dependencyDashboard"]
 }
